@@ -10,8 +10,26 @@ PRODUCTS = [
 ]
 
 
-def list_products() -> list[Product]:
-    return PRODUCTS.copy()
+def list_products(
+    *,
+    q: str | None = None,
+    sort: str | None = None,
+    order: str = "asc",
+) -> list[Product]:
+    products = PRODUCTS.copy()
+    if q:
+        q_lower = q.lower()
+        products = [
+            p for p in products
+            if q_lower in p.name.lower() or q_lower in p.category.lower()
+        ]
+    if sort:
+        products = sorted(
+            products,
+            key=lambda p: getattr(p, sort),
+            reverse=(order == "desc"),
+        )
+    return products
 
 
 def get_product(product_id: int) -> Product | None:
