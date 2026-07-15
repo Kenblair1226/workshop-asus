@@ -16,6 +16,15 @@ def test_search_is_case_insensitive_and_partial(client: TestClient) -> None:
     ]
 
 
+def test_search_matches_category_partial(client: TestClient) -> None:
+    response = client.get("/products", params={"q": "creator"})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] == 1
+    assert [item["name"] for item in body["items"]] == ["ProArt P16"]
+
+
 def test_sort_by_price_descending(client: TestClient) -> None:
     response = client.get("/products", params={"sort": "price", "order": "desc"})
 
