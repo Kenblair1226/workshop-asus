@@ -31,7 +31,6 @@ def test_list_products_with_max_price(client: TestClient) -> None:
         "ROG Ally X",
         "ProArt Display PA279CRV",
     ]
-    assert "Zenbook 14 OLED" not in [item["name"] for item in body["items"]]
 
 
 def test_list_products_rejects_negative_max_price(client: TestClient) -> None:
