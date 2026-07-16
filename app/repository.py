@@ -1,3 +1,4 @@
+import operator
 from typing import Literal
 
 from app.models import Product
@@ -29,8 +30,7 @@ def list_products(
     if max_price is not None:
         products = [product for product in products if product.price <= max_price]
     if sort is not None:
-        key = (lambda product: product.name) if sort == "name" else (lambda product: product.price)
-        products.sort(key=key, reverse=order == "desc")
+        products.sort(key=operator.attrgetter(sort), reverse=order == "desc")
     return products
 
 
