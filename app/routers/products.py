@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 from app.models import Product, ProductPage
 from app.repository import get_product, list_products
@@ -7,8 +7,8 @@ router = APIRouter(prefix="/products", tags=["products"])
 
 
 @router.get("", response_model=ProductPage)
-def read_products() -> ProductPage:
-    products = list_products()
+def read_products(max_price: float | None = Query(default=None, gt=0)) -> ProductPage:
+    products = list_products(max_price=max_price)
     return ProductPage(
         items=products,
         total=len(products),

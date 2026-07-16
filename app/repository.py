@@ -10,10 +10,13 @@ PRODUCTS = [
 ]
 
 
-def list_products() -> list[Product]:
-    return PRODUCTS.copy()
+def list_products(max_price: float | None = None) -> list[Product]:
+    return [
+        product
+        for product in PRODUCTS
+        if max_price is None or product.price <= max_price
+    ]
 
 
 def get_product(product_id: int) -> Product | None:
     return next((product for product in PRODUCTS if product.id == product_id), None)
-
