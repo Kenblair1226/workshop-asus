@@ -63,6 +63,7 @@ def test_search_sort_and_pagination_can_be_combined(client: TestClient) -> None:
         ({"order": "sideways"}, "order"),
         ({"page": 0}, "page"),
         ({"page_size": 21}, "page_size"),
+        ({"q": "x" * 101}, "q"),
     ],
 )
 def test_invalid_query_parameters_return_422(

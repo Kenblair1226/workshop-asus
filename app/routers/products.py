@@ -10,7 +10,7 @@ router = APIRouter(prefix="/products", tags=["products"])
 
 @router.get("", response_model=ProductPage)
 def read_products(
-    q: str | None = Query(default=None),
+    q: str | None = Query(default=None, max_length=100),
     sort: Literal["name", "price"] | None = Query(default=None),
     order: Literal["asc", "desc"] = Query(default="asc"),
     page: int = Query(default=1, ge=1),
