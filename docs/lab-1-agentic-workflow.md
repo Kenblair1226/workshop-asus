@@ -25,6 +25,7 @@ python scripts/validate.py
 | Parameter | 規則 |
 |---|---|
 | `q` | 對產品名稱或分類執行不區分大小寫的 partial match |
+| `max_price` | 僅回傳價格小於或等於指定上限的產品 |
 | `sort` | 僅允許 `name` 或 `price`；無效值回傳 HTTP 422 |
 | `order` | 僅允許 `asc` 或 `desc`；預設 `asc`；無效值回傳 HTTP 422 |
 | `page` | 大於或等於 1 的整數；預設 1 |
