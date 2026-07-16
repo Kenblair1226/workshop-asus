@@ -20,23 +20,27 @@ def test_list_products(client: TestClient) -> None:
 
 
 def test_list_products_with_max_price(client: TestClient) -> None:
-    response = client.get("/products", params={"max_price": 40000})
+    response = client.get("/products", params={"max_price": 38900})
 
     assert response.status_code == 200
     body = response.json()
     assert body["total"] == 3
+    assert all(item["price"] <= 38900 for item in body["items"])
     assert [item["name"] for item in body["items"]] == [
         "TUF Gaming A15",
         "ROG Ally X",
         "ProArt Display PA279CRV",
     ]
+    assert "Zenbook 14 OLED" not in [item["name"] for item in body["items"]]
 
 
 def test_list_products_rejects_negative_max_price(client: TestClient) -> None:
     response = client.get("/products", params={"max_price": -1})
 
     assert response.status_code == 422
-    assert "max_price" in str(response.json())
+    error = response.json()["detail"][0]
+    assert error["loc"][-1] == "max_price"
+    assert error["type"] == "greater_than_equal"
 
 
 def test_get_product(client: TestClient) -> None:
