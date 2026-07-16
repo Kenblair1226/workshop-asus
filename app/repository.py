@@ -1,3 +1,6 @@
+import operator
+from typing import Literal
+
 from app.models import Product
 
 PRODUCTS = [
@@ -10,10 +13,26 @@ PRODUCTS = [
 ]
 
 
-def list_products() -> list[Product]:
-    return PRODUCTS.copy()
+def list_products(
+    q: str | None = None,
+    max_price: float | None = None,
+    sort: Literal["name", "price"] | None = None,
+    order: Literal["asc", "desc"] = "asc",
+) -> list[Product]:
+    products = PRODUCTS.copy()
+    if q is not None:
+        query = q.casefold()
+        products = [
+            product
+            for product in products
+            if query in product.name.casefold() or query in product.category.casefold()
+        ]
+    if max_price is not None:
+        products = [product for product in products if product.price <= max_price]
+    if sort is not None:
+        products.sort(key=operator.attrgetter(sort), reverse=order == "desc")
+    return products
 
 
 def get_product(product_id: int) -> Product | None:
     return next((product for product in PRODUCTS if product.id == product_id), None)
-
