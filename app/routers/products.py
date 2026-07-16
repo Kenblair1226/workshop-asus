@@ -1,3 +1,5 @@
+from typing import Literal
+
 from fastapi import APIRouter, HTTPException, Query, status
 
 from app.models import Product, ProductPage
@@ -7,13 +9,22 @@ router = APIRouter(prefix="/products", tags=["products"])
 
 
 @router.get("", response_model=ProductPage)
-def read_products(max_price: float | None = Query(default=None, gt=0)) -> ProductPage:
-    products = list_products(max_price=max_price)
+def read_products(
+    q: str | None = Query(default=None),
+    sort: Literal["name", "price"] | None = Query(default=None),
+    order: Literal["asc", "desc"] = Query(default="asc"),
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=20),
+    max_price: float | None = Query(default=None, gt=0),
+) -> ProductPage:
+    products = list_products(q=q, max_price=max_price, sort=sort, order=order)
+    total = len(products)
+    start = (page - 1) * page_size
     return ProductPage(
-        items=products,
-        total=len(products),
-        page=1,
-        page_size=20,
+        items=products[start : start + page_size],
+        total=total,
+        page=page,
+        page_size=page_size,
     )
 
 
