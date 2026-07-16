@@ -29,7 +29,8 @@ def list_products(
     if max_price is not None:
         products = [product for product in products if product.price <= max_price]
     if sort is not None:
-        products.sort(key=lambda product: getattr(product, sort), reverse=order == "desc")
+        key = (lambda product: product.name) if sort == "name" else (lambda product: product.price)
+        products.sort(key=key, reverse=order == "desc")
     return products
 
 
