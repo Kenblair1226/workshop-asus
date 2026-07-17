@@ -29,8 +29,9 @@ def list_products(
     total = len(products)
 
     if sort:
+        sort_key = {"name": lambda p: p.name, "price": lambda p: p.price}[sort]
         reverse = order == "desc"
-        products = sorted(products, key=lambda p: getattr(p, sort), reverse=reverse)
+        products = sorted(products, key=sort_key, reverse=reverse)
 
     start = (page - 1) * page_size
     products = products[start : start + page_size]
