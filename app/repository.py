@@ -10,8 +10,33 @@ PRODUCTS = [
 ]
 
 
-def list_products() -> list[Product]:
-    return PRODUCTS.copy()
+def list_products(
+    *,
+    q: str | None = None,
+    sort: str | None = None,
+    order: str = "asc",
+    page: int = 1,
+    page_size: int = 20,
+) -> tuple[list[Product], int]:
+    products: list[Product] = PRODUCTS.copy()
+
+    if q:
+        q_lower = q.lower()
+        products = [
+            p for p in products if q_lower in p.name.lower() or q_lower in p.category.lower()
+        ]
+
+    total = len(products)
+
+    if sort:
+        sort_key = {"name": lambda p: p.name, "price": lambda p: p.price}[sort]
+        reverse = order == "desc"
+        products = sorted(products, key=sort_key, reverse=reverse)
+
+    start = (page - 1) * page_size
+    products = products[start : start + page_size]
+
+    return products, total
 
 
 def get_product(product_id: int) -> Product | None:
