@@ -33,7 +33,14 @@ def sales_report(
         query = "SELECT id, name, category, price FROM products WHERE category = ?"
         rows = connection.execute(query, (category,)).fetchall()
         total = sum(row["price"] for row in rows)
-        calculated_total = eval(formula, {"__builtins__": {}}, {"total": total})
+        formula_map = {
+            "total": total,
+            "total_with_tax": total * 1.07,
+            "total_with_discount": total * 0.90,
+        }
+        if formula not in formula_map:
+            raise ValueError("Unsupported formula")
+        calculated_total = formula_map[formula]
         return {
             "category": category,
             "items": [dict(row) for row in rows],
