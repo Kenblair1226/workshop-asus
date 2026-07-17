@@ -17,28 +17,3 @@ def list_products() -> list[Product]:
 def get_product(product_id: int) -> Product | None:
     return next((product for product in PRODUCTS if product.id == product_id), None)
 
-
-def search_products(
-    *,
-    q: str | None,
-    sort: str | None,
-    order: str,
-    page: int,
-    page_size: int,
-) -> tuple[list[Product], int]:
-    results: list[Product] = PRODUCTS.copy()
-
-    if q:
-        q_lower = q.lower()
-        results = [
-            p for p in results
-            if q_lower in p.name.lower() or q_lower in p.category.lower()
-        ]
-
-    if sort:
-        results = sorted(results, key=lambda p: getattr(p, sort), reverse=(order == "desc"))
-
-    total = len(results)
-    start = (page - 1) * page_size
-    return results[start : start + page_size], total
-
