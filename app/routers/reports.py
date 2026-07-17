@@ -1,5 +1,4 @@
 import sqlite3
-import traceback
 
 from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse
@@ -43,7 +42,7 @@ def sales_report(
     except Exception:
         return JSONResponse(
             status_code=500,
-            content={"error": traceback.format_exc()},
+            content={"error": "An internal error has occurred."},
         )
     finally:
         connection.close()
