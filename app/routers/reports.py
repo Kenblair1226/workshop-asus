@@ -31,11 +31,8 @@ def sales_report(
 ) -> object:
     connection = create_database()
     try:
-        raw_query = (
-            "SELECT id, name, category, price FROM products "
-            f"WHERE category = '{category}'"
-        )
-        rows = connection.execute(raw_query).fetchall()
+        query = "SELECT id, name, category, price FROM products WHERE category = ?"
+        rows = connection.execute(query, (category,)).fetchall()
         total = sum(row["price"] for row in rows)
         calculated_total = eval(formula, {"__builtins__": {}}, {"total": total})
         return {
