@@ -17,3 +17,30 @@ def list_products() -> list[Product]:
 def get_product(product_id: int) -> Product | None:
     return next((product for product in PRODUCTS if product.id == product_id), None)
 
+
+def search_products(
+    *,
+    q: str | None = None,
+    sort: str | None = None,
+    order: str = "asc",
+    page: int = 1,
+    page_size: int = 20,
+) -> tuple[list[Product], int]:
+    """Return (page_items, total) where total is the filtered count before pagination."""
+    results = PRODUCTS.copy()
+
+    if q is not None:
+        needle = q.lower()
+        results = [
+            p for p in results
+            if needle in p.name.lower() or needle in p.category.lower()
+        ]
+
+    if sort is not None:
+        reverse = order == "desc"
+        results = sorted(results, key=lambda p: getattr(p, sort), reverse=reverse)
+
+    total = len(results)
+    start = (page - 1) * page_size
+    return results[start : start + page_size], total
+
